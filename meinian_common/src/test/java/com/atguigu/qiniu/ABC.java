@@ -10,5 +10,6 @@ public class ABC {
     @Test
     public void test(){
         System.out.println("ABCmasterAAAAA");
+        System.out.println("ABCdevBBBBBB");
     }
 }
