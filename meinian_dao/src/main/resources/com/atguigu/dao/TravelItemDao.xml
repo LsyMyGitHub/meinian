@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--        mapper接口配置文件-->
+<!--        这里写对应的接口路径-->
+<!--在MyBatis写sql不要加;-->
+<mapper namespace="com.atguigu.dao.TravelItemDao">
+
+    <insert id="add" parameterType="com.atguigu.pojo.TravelItem">
+        insert into t_travelitem(code, name, sex, age, price, type, remark, attention)
+        values (#{code}, #{name}, #{sex}, #{age}, #{price}, #{type}, #{remark}, #{attention})
+    </insert>
+
+
+    <!--      Page findPage(@Param(value = "queryPageBean") String queryPageBean);-->
+    <select id="findPage" parameterType="string" resultType="com.atguigu.pojo.TravelItem">
+        select * from t_travelitem
+        <where>
+            <if test="queryPageBean!=null and queryPageBean.length>0">
+                name like "%"#{queryPageBean}"%" or code =#{queryPageBean}
+            </if>
+        </where>
+
+    </select>
+
+
+    <!--        void delete(Integer id);-->
+    <delete id="delete" parameterType="integer">
+        delete
+        from t_travelitem
+        where id = #{id}
+    </delete>
+
+    <!--    TravelItem getById(Integer id);-->
+    <select id="getById" parameterType="integer" resultType="com.atguigu.pojo.TravelItem">
+        select *
+        from t_travelitem
+        where id = #{id}
+    </select>
+
+
+    <!--  void edit(TravelItem travelItem);-->
+    <update id="edit" parameterType="com.atguigu.pojo.TravelItem">
+        update t_travelitem
+        <set>
+            <if test="code!=null and code.length>0">
+                code=#{code},
+            </if>
+            <if test="name!=null and name.length>0">
+                name=#{name},
+            </if>
+            <if test="sex!=null and sex.length>0">
+                sex=#{sex},
+            </if>
+            <if test="age!=null and age.length>0">
+                age=#{age},
+            </if>
+            <if test="price!=null">
+                price=#{price},
+            </if>
+            <if test="type!=null and type.length>0">
+                type=#{type},
+            </if>
+            <if test="remark!=null and remark.length>0">
+                remark=#{remark},
+            </if>
+            <if test="attention!=null and attention.length>0">
+                attention=#{attention},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <!--      List<TravelItem> findAll();-->
+    <select id="findAll" resultType="com.atguigu.pojo.TravelItem">
+        select *
+        from t_travelitem
+    </select>
+
+
+    <!--       long travelItemAndtravelGroup(Integer id);-->
+
+    <!--    <select id="travelItemAndTravelGroup" parameterType="integer" resultSetType="">-->
+    <!--        SELECT COUNT(*) FROM t_travelgroup_travelitem WHERE travelitem_id=#{id}-->
+    <!--    </select>-->
+    <select id="travelItemAndTravelGroup" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM t_travelgroup_travelitem
+        WHERE travelitem_id = #{id}
+    </select>
+
+
+    <resultMap id="travelItemResultMap" type="com.atguigu.pojo.TravelItem">
+        <id property="id" column="id"></id>
+        <result property="code" column="code"></result>
+        <result property="name" column="name"></result>
+        <result property="sex" column="sex"></result>
+        <result property="age" column="age"></result>
+        <result property="price" column="price"></result>
+        <result property="type" column="type"></result>
+        <result property="remark" column="remark"></result>
+        <result property="attention" column="attention"></result>
+    </resultMap>
+
+    <!--        TravelItem findTravelItemById(Integer id);-->
+    <select id="findTravelItemById" resultMap="travelItemResultMap">
+
+
+                SELECT t_travelitem.* FROM t_travelitem
+        WHERE id IN(
+            SELECT travelitem_id FROM t_travelgroup_travelitem  WHERE travelgroup_id=#{id} )
+
+
+    </select>
+
+
+</mapper>
+
+
+
+

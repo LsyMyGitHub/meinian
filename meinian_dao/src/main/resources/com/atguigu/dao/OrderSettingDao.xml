@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--        mapper接口配置文件-->
+<!--        这里写对应的接口路径-->
+
+<mapper namespace="com.atguigu.dao.OrderSettingDao">
+<!--      void addBatch(OrderSetting orderSetting);-->
+    <insert id="addBatch">
+        insert into t_ordersetting (orderDate,number,reservations)
+        values (#{orderDate},#{number},#{reservations})
+
+    </insert>
+
+
+    <!--        void edit(OrderSetting orderSetting);-->
+    <update id="edit">
+        update t_ordersetting set number=#{number} where orderDate=#{orderDate}
+    </update>
+<!--        void editReservations(OrderSetting orderSetting);-->
+    <update id="editReservations">
+        update t_ordersetting set reservations=#{reservations} where orderDate=#{orderDate}
+    </update>
+
+
+    <!-- long findOrderSettingData(Date orderDate);-->
+    <select id="findOrderSettingData" resultType="java.lang.Long">
+        select count(*) from t_ordersetting where orderDate=#{orderDate}
+    </select>
+
+<!--
+    List<OrderSetting> getOrderSettingByMonth(Map map);-->
+    <select id="getOrderSettingByMonth" parameterType="map" resultType="com.atguigu.pojo.OrderSetting">
+        select * from t_ordersetting where orderDate between #{dateStart} and #{dateEnd}
+    </select>
+<!--        OrderSetting getDateCount(Date date);-->
+    <select id="getDateCount" resultType="com.atguigu.pojo.OrderSetting">
+        select * from t_ordersetting  where orderDate=#{date}
+    </select>
+
+
+</mapper>

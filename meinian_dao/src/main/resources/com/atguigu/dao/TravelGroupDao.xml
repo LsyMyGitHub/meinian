@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--        mapper接口配置文件-->
+<!--        这里写对应的接口路径-->
+
+<mapper namespace="com.atguigu.dao.TravelGroupDao">
+
+    <!--   void add(TravelGroup travelGroup);  -->
+    <!--   keyProperty：这个玩意就是取自增长主键
+            useGeneratedKeys=true就是开启 -->
+    <insert id="add" parameterType="com.atguigu.pojo.TravelGroup" keyProperty="id" useGeneratedKeys="true">
+        insert into t_travelgroup (code, name, helpCode, sex, remark, attention)
+        values (#{code}, #{name}, #{helpCode}, #{sex}, #{remark}, #{attention})
+    </insert>
+
+
+    <!--    void setTravelGroupAndTravelItem(Map<String, Integer> hashMap);-->
+    <insert id="setTravelGroupAndTravelItem" parameterType="map">
+        insert into t_travelgroup_travelitem(travelgroup_id, travelitem_id)
+        values (#{travelGroupId}, #{travelItemIds})
+    </insert>
+
+
+
+    <!--           Page<TravelGroup> findPage(@Param("queryString") String queryString);-->
+    <select id="findPage" parameterType="string" resultType="com.atguigu.pojo.TravelGroup">
+        select * from t_travelgroup
+        <where>
+            <if test="queryString!=null and queryString.length>0">
+                code =#{queryString} or helpCode=#{queryString} or name like concat ("%",#{queryString},"%")
+            </if>
+        </where>
+    </select>
+
+<!--       TravelGroup getById(Integer id);-->
+    <select id="getById" parameterType="integer" resultType="com.atguigu.pojo.TravelGroup">
+        select * from t_travelgroup where id=#{id}
+    </select>
+
+<!--      List<Integer> byTravelGroupIdGetTravelItemId(Integer id);-->
+    <select id="byTravelGroupIdGetTravelItemId" parameterType="integer" resultType="java.lang.Integer">
+        select travelitem_id from t_travelgroup_travelitem where travelgroup_id=#{id}
+    </select>
+
+
+    <!--     void delete(Integer travelGroupId);-->
+
+    <delete id="delete" parameterType="integer">
+        delete from t_travelgroup_travelitem where travelgroup_id=#{travelGroupId}
+    </delete>
+
+
+    <!--    void edit(TravelGroup travelGroup);-->
+    <update id="edit" parameterType="com.atguigu.pojo.TravelGroup">
+        update t_travelgroup
+        <set>
+        <if test=" code!=null and  code.length>0">
+             code=#{ code},
+        </if>
+        <if test=" name!=null and  name.length>0">
+             name=#{ name},
+        </if>
+        <if test=" helpCode!=null and  helpCode.length>0">
+             helpCode=#{ helpCode},
+        </if>
+        <if test=" sex!=null and  sex.length>0">
+             sex=#{ sex},
+        </if>
+        <if test=" remark!=null and  remark.length>0">
+             remark=#{ remark},
+        </if>
+        <if test=" attention!=null and  attention.length>0">
+             attention=#{ attention},
+        </if>
+
+        </set>
+        where id=#{id}
+
+    </update>
+
+<!--        void deleteGroup(Integer id);-->
+    <delete id="deleteGroup" parameterType="integer">
+        delete from t_travelgroup where id=#{id}
+    </delete>
+
+
+<!--        List<TravelGroup> findAll();-->
+
+    <select id="findAll" resultType="com.atguigu.pojo.TravelGroup">
+        select * from  t_travelgroup
+    </select>
+
+<!--       TravelGroup findTravelGroupById(Integer id);-->
+
+    <resultMap id="TravelGroupResultMap" type="com.atguigu.pojo.TravelGroup">
+        <id property="id" column="id"></id>
+       <result property="code" column="code"></result>
+       <result property="name" column="name"></result>
+       <result property="helpCode" column="helpCode"></result>
+       <result property="sex" column="sex"></result>
+       <result property="remark" column="remark"></result>
+       <result property="attention" column="attention"></result>
+
+<!--        这里一样的也是通过关联集合属性来多表联查-->
+        <collection property="travelItems" column="id"
+                    select="com.atguigu.dao.TravelItemDao.findTravelItemById">
+        </collection>
+    </resultMap>
+
+    <select id="findTravelGroupById" parameterType="integer" resultMap="TravelGroupResultMap">
+        SELECT t_travelgroup.*
+        FROM t_travelgroup
+        WHERE id IN (
+            SELECT travelgroup_id FROM t_setmeal_travelgroup
+            WHERE setmeal_id=#{id}
+        )
+    </select>
+</mapper>
+

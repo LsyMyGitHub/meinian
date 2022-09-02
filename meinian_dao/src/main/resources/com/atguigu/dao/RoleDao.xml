@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--        mapper接口配置文件-->
+<!--        这里写对应的接口路径-->
+
+<mapper namespace="com.atguigu.dao.RoleDao">
+
+<!--       Set<Role> findRolesByUserId(@Param("id") Integer userId);-->
+
+    <resultMap id="RoleResultMap" type="com.atguigu.pojo.Role">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="keyword" property="keyword"></result>
+        <result column="description" property="description"></result>
+        <collection property="permissions" column="id"
+                    select="com.atguigu.dao.PermissionDao.findPermissionsByRoleId"></collection>
+    </resultMap>
+    <select id="findRolesByUserId" resultMap="RoleResultMap">
+        SELECT r.* FROM t_role r
+        WHERE r.id=(SELECT  role_id FROM t_user_role
+                    WHERE user_id=#{id})
+    </select>
+</mapper>

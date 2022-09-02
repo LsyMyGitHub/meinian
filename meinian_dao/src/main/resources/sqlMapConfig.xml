@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+
+
+    <!-- Mybatis全局配置 -->
+    <settings>
+        <!-- 将数据库表字段映射到驼峰式命名的Java实体类属性中 -->
+        <!-- 数据库表字段格式：单词_单词 -->
+        <!-- Java实体类属性：首字母小写的驼峰式命名 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <plugins>
+        <!-- com.github.pagehelper 为 PageHelper 类所在包名 -->
+        <plugin interceptor="com.github.pagehelper.PageHelper">
+            <!-- 设置数据库类型 Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL 六种数据库-->
+            <property name="dialect" value="mysql"/>
+        </plugin>
+    </plugins>
+</configuration>

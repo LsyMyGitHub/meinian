@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--        mapper接口配置文件-->
+<!--        这里写对应的接口路径-->
+
+<mapper namespace="com.atguigu.dao.AddressDao">
+
+    <select id="findAllMaps" resultType="com.atguigu.pojo.Address">
+        select * from t_address
+    </select>
+
+    <select id="findPage" parameterType="string" resultType="com.atguigu.pojo.Address">
+        select * from t_address
+        <where>
+            <if test="queryString!=null and queryString.length>0">
+                addressName like concat("%",#{queryString},"%")
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="addAddress" parameterType="com.atguigu.pojo.Address">
+        insert into t_address(addressName,lng,lat) values(#{addressName},#{lng},#{lat})
+    </insert>
+
+    <delete id="deleteById" parameterType="integer">
+        delete from t_address where id =#{id}
+    </delete>
+</mapper>

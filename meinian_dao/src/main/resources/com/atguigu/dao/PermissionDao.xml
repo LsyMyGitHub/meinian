@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--        mapper接口配置文件-->
+<!--        这里写对应的接口路径-->
+
+<mapper namespace="com.atguigu.dao.PermissionDao">
+
+<!--       Set<Permission> findPermissionsByRoleId(Integer roleId);-->
+
+
+    <select id="findPermissionsByRoleId"  parameterType="int" resultType="com.atguigu.pojo.Permission">
+
+        SELECT p.* FROM   t_permission p
+        WHERE p.id IN (SELECT permission_id FROM t_role_permission WHERE role_id=#{id} )
+
+
+    </select>
+</mapper>
